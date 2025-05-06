@@ -8,18 +8,18 @@ import math
 st.set_page_config(page_title="画像分割ツール", layout="wide")
 st.title("📄 画像分割ツール")
 
-# カスタムCSSでボタンの左寄せ＆マージン調整
+# CSS for horizontal button row
 st.markdown(
     """
     <style>
-    .button-row {
+    div.horizontal-buttons {
         display: flex;
         justify-content: flex-start;
-        flex-wrap: wrap;
         gap: 10px;
         margin-bottom: 1em;
     }
-    .button-row form {
+    div.horizontal-buttons form {
+        display: inline-block;
         margin: 0;
     }
     </style>
@@ -42,7 +42,7 @@ if uploaded_file:
 
         with right_col:
             st.markdown("### 🔢 分割数を選択")
-            st.markdown('<div class="button-row">', unsafe_allow_html=True)
+            st.markdown('<div class="horizontal-buttons">', unsafe_allow_html=True)
             for splits in range(2, 8):
                 if st.button(f"{splits}分割", key=f"btn_{splits}"):
                     st.session_state.num_splits = splits
