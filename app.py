@@ -14,7 +14,6 @@ if uploaded_file:
     st.write(f"受け取ったファイル名: `{uploaded_file.name}`")
     try:
         img = Image.open(uploaded_file).convert("RGB")
-        st.image(img, caption="アップロード画像", use_column_width=True)
 
         num_splits = st.slider("分割数を選択してください", min_value=1, max_value=10, value=3)
 
