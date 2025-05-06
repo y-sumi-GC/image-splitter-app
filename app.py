@@ -8,19 +8,18 @@ import math
 st.set_page_config(page_title="画像分割ツール", layout="wide")
 st.title("📄 画像分割ツール")
 
-# CSS for horizontal button row
+# CSS for true horizontal button layout
 st.markdown(
     """
     <style>
-    div.horizontal-buttons {
+    .button-container {
         display: flex;
-        justify-content: flex-start;
+        flex-wrap: nowrap;
         gap: 10px;
-        margin-bottom: 1em;
+        margin-bottom: 20px;
     }
-    div.horizontal-buttons form {
+    .button-container form {
         display: inline-block;
-        margin: 0;
     }
     </style>
     """,
@@ -36,21 +35,19 @@ if uploaded_file:
 
         left_col, right_col = st.columns(2)
 
-        # 初期値設定用のセッションステート
         if "num_splits" not in st.session_state:
             st.session_state.num_splits = 3
 
         with right_col:
             st.markdown("### 🔢 分割数を選択")
-            st.markdown('<div class="horizontal-buttons">', unsafe_allow_html=True)
+            st.markdown('<div class="button-container">', unsafe_allow_html=True)
             for splits in range(2, 8):
-                if st.button(f"{splits}分割", key=f"btn_{splits}"):
+                if st.form(key=f"form_{splits}").form_submit_button(f"{splits}分割"):
                     st.session_state.num_splits = splits
             st.markdown('</div>', unsafe_allow_html=True)
 
         num_splits = st.session_state.num_splits
 
-        # 分割処理
         chunk_height = math.ceil(img.height / num_splits)
         chunks = []
 
@@ -66,7 +63,6 @@ if uploaded_file:
                 with preview_cols[i]:
                     st.image(chunk, caption=f"{i+1}枚目", use_container_width=True)
 
-        # ZIPにまとめてダウンロード
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "w") as zip_file:
             for idx, chunk in enumerate(chunks):
