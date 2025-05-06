@@ -23,11 +23,11 @@ if uploaded_file:
 
         with right_col:
             st.markdown("### 🔢 分割数を選択")
-            btn_cols = st.columns(5)
-            for i in range(10):
-                with btn_cols[i % 5]:
-                    if st.button(f"{i+1}分割", key=f"btn_{i+1}"):
-                        st.session_state.num_splits = i + 1
+            btn_cols = st.columns(6)  # 2〜7までの6ボタンを1行に配置
+            for idx, splits in enumerate(range(2, 8)):
+                with btn_cols[idx]:
+                    if st.button(f"{splits}分割", key=f"btn_{splits}"):
+                        st.session_state.num_splits = splits
 
         num_splits = st.session_state.num_splits
 
