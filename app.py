@@ -15,17 +15,28 @@ if uploaded_file:
     try:
         img = Image.open(uploaded_file).convert("RGB")
 
-        left_col, right_col = st.columns([2, 1])
+        left_col, right_col = st.columns(2)
+
+        # 初期値設定用のセッションステート
+        if "num_splits" not in st.session_state:
+            st.session_state.num_splits = 3
 
         with right_col:
-            num_splits = st.slider("分割数を選択してください", min_value=1, max_value=10, value=3)
+            st.markdown("### 🔢 分割数を選択")
+            btn_cols = st.columns(5)
+            for i in range(10):
+                with btn_cols[i % 5]:
+                    if st.button(f"{i+1}分割", key=f"btn_{i+1}"):
+                        st.session_state.num_splits = i + 1
+
+        num_splits = st.session_state.num_splits
 
         # 分割処理
         chunk_height = math.ceil(img.height / num_splits)
         chunks = []
 
         with left_col:
-            st.markdown("### 🔍 分割画像プレビュー")
+            st.markdown(f"### 🔍 {num_splits}分割プレビュー")
             preview_cols = st.columns(num_splits)
             for i in range(num_splits):
                 top = i * chunk_height
@@ -34,7 +45,7 @@ if uploaded_file:
                 chunk = img.crop(box)
                 chunks.append(chunk)
                 with preview_cols[i]:
-                    st.image(chunk, caption=f"{i+1}枚目", use_column_width=True)
+                    st.image(chunk, caption=f"{i+1}枚目", use_container_width=True)
 
         # ZIPにまとめてダウンロード
         zip_buffer = io.BytesIO()
@@ -45,6 +56,7 @@ if uploaded_file:
                 zip_file.writestr(f"chunk_{idx+1}.png", img_byte_arr.getvalue())
 
         with right_col:
+            st.markdown("### 📥 ダウンロード")
             st.download_button(
                 label="📦 分割画像をZIPで一括ダウンロード",
                 data=zip_buffer.getvalue(),
