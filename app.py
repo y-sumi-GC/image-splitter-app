@@ -8,6 +8,19 @@ import math
 st.set_page_config(page_title="画像分割ツール", layout="wide")
 st.title("📄 画像分割ツール")
 
+# カスタムCSSでボタンの間隔を調整（左寄せで横並び）
+st.markdown(
+    """
+    <style>
+    .split-buttons-container button {
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 uploaded_file = st.file_uploader("画像をアップロードしてください（拡張子制限なし）", type=None)
 
 if uploaded_file:
@@ -23,11 +36,13 @@ if uploaded_file:
 
         with right_col:
             st.markdown("### 🔢 分割数を選択")
-            btn_cols = st.columns(6)  # 2〜7までの6ボタンを1行に配置
+            st.markdown('<div class="split-buttons-container">', unsafe_allow_html=True)
+            button_cols = st.columns(6)
             for idx, splits in enumerate(range(2, 8)):
-                with btn_cols[idx]:
+                with button_cols[idx]:
                     if st.button(f"{splits}分割", key=f"btn_{splits}"):
                         st.session_state.num_splits = splits
+            st.markdown('</div>', unsafe_allow_html=True)
 
         num_splits = st.session_state.num_splits
 
